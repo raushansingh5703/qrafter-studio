@@ -9,7 +9,6 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@tailwindcss/oxide-win32-x64-msvc": "^4.3.3",
     "canvas-confetti": "^1.9.4",
     "framer-motion": "^13.1.0",
     "html5-qrcode": "^2.3.8",
