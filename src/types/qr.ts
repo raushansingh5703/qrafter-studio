@@ -11,7 +11,9 @@ export type QRType =
   | 'social'
   | 'feedback'
   | 'coupon'
-  | 'app';
+  | 'app'
+  | 'text'
+  | 'wifi';
 
 export interface UPIFields {
   payeeVpa: string;
@@ -60,6 +62,17 @@ export interface AppFields {
   appStoreUrl: string;
 }
 
+export interface WifiFields {
+  ssid: string;
+  password?: string;
+  encryption: 'WPA' | 'WEP' | 'nopass';
+  hidden?: boolean;
+}
+
+export interface TextFields {
+  text: string;
+}
+
 export interface QRDetails {
   website: { url: string };
   'google-review': { reviewUrl: string; businessName: string };
@@ -74,6 +87,8 @@ export interface QRDetails {
   feedback: { feedbackUrl: string; title: string };
   coupon: CouponFields;
   app: AppFields;
+  text: TextFields;
+  wifi: WifiFields;
 }
 
 export interface QRDesign {
@@ -107,13 +122,16 @@ export interface QRDesign {
     backgroundShape: 'circle' | 'square' | 'none';
     backgroundColor: string;
     opacity: number; // 0 to 1
+    hideBackgroundDots: boolean;
   };
   frame: {
-    style: 'none' | 'border' | 'rounded' | 'modern' | 'badge' | 'scan-me' | 'bottom-label';
+    style: 'none' | 'border' | 'rounded' | 'modern' | 'badge' | 'scan-me' | 'bottom-label' | 'clay-3d';
     text: string;
     color: string;
     textColor: string;
   };
+  backgroundImage?: string;
+  backgroundOpacity?: number;
   text: {
     title: string;
     subtitle: string;
@@ -152,7 +170,9 @@ export const defaultDetails: QRDetails = {
   social: { url: 'https://instagram.com/mybusiness', platform: 'instagram' },
   feedback: { feedbackUrl: 'https://example.com/feedback', title: 'Share Feedback' },
   coupon: { couponCode: 'SAVE20', offerDetails: 'Get 20% off on your first purchase!', expiryDate: '' },
-  app: { playStoreUrl: 'https://play.google.com/store', appStoreUrl: 'https://apps.apple.com' }
+  app: { playStoreUrl: 'https://play.google.com/store', appStoreUrl: 'https://apps.apple.com' },
+  text: { text: 'Hello, this is a custom QR code!' },
+  wifi: { ssid: 'MyHomeWiFi', password: 'password123', encryption: 'WPA', hidden: false }
 };
 
 export const defaultDesign: QRDesign = {
@@ -179,7 +199,8 @@ export const defaultDesign: QRDesign = {
     padding: 6,
     backgroundShape: 'circle',
     backgroundColor: '#ffffff',
-    opacity: 1
+    opacity: 1,
+    hideBackgroundDots: true
   },
   frame: {
     style: 'none',
@@ -187,6 +208,8 @@ export const defaultDesign: QRDesign = {
     color: '#0f172a',
     textColor: '#ffffff'
   },
+  backgroundImage: '',
+  backgroundOpacity: 1.0,
   text: {
     title: 'SCAN TO CONNECT',
     subtitle: 'Scan with your smartphone camera',

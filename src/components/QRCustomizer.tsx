@@ -15,7 +15,7 @@ import {
   AlignCenter,
   AlignRight
 } from 'lucide-react';
-import { QRType, QRDesign, QRDetails, UPIFields, VCardFields, EmailFields } from '../types/qr';
+import { QRType, QRDesign, QRDetails, UPIFields, VCardFields, EmailFields, WifiFields, TextFields } from '../types/qr';
 
 interface QRCustomizerProps {
   selectedType: QRType;
@@ -139,6 +139,44 @@ export default function QRCustomizer({
     onDesignChange({ logo: { ...design.logo, source: '' } });
   };
 
+  // Helper to load background image as compressed Base64
+  const handleBgUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        const maxDim = 800; // higher resolution for background image
+        let w = img.width;
+        let h = img.height;
+        if (w > maxDim || h > maxDim) {
+          if (w > h) {
+            h = Math.round((h * maxDim) / w);
+            w = maxDim;
+          } else {
+            w = Math.round((w * maxDim) / h);
+            h = maxDim;
+          }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        ctx?.drawImage(img, 0, 0, w, h);
+        const compressedBase64 = canvas.toDataURL('image/png');
+        onDesignChange({ backgroundImage: compressedBase64 });
+      };
+      img.src = event.target?.result as string;
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const removeBgImage = () => {
+    onDesignChange({ backgroundImage: '' });
+  };
+
   // Render input fields depending on the active type
   const renderContentInputs = () => {
     switch (selectedType) {
@@ -149,11 +187,82 @@ export default function QRCustomizer({
               <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Website URL</label>
               <input
                 type="url"
-                value={details.website.url}
+                value={details.website?.url || ''}
                 onChange={(e) => onDetailsChange({ url: e.target.value })}
                 placeholder="https://example.com"
                 className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 text-sm"
               />
+            </div>
+          </div>
+        );
+
+      case 'text':
+        return (
+          <div className="space-y-4">
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Plain Text Content</label>
+              <textarea
+                value={details.text?.text || ''}
+                onChange={(e) => onDetailsChange({ text: e.target.value })}
+                placeholder="Enter any text, code, or message to encode in the QR..."
+                rows={4}
+                className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 text-sm resize-none"
+              />
+            </div>
+          </div>
+        );
+
+      case 'wifi':
+        const wifi = (details.wifi || {}) as WifiFields;
+        return (
+          <div className="space-y-4">
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Network SSID (Name)</label>
+              <input
+                type="text"
+                value={wifi.ssid || ''}
+                onChange={(e) => onDetailsChange({ ssid: e.target.value })}
+                placeholder="e.g. MyHomeNetwork"
+                className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 text-sm"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Security/Encryption</label>
+                <select
+                  value={wifi.encryption || 'WPA'}
+                  onChange={(e) => onDetailsChange({ encryption: e.target.value as any })}
+                  className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 text-sm"
+                >
+                  <option value="WPA">WPA / WPA2</option>
+                  <option value="WEP">WEP</option>
+                  <option value="nopass">None (Open Network)</option>
+                </select>
+              </div>
+              {wifi.encryption !== 'nopass' && (
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Password</label>
+                  <input
+                    type="text"
+                    value={wifi.password || ''}
+                    onChange={(e) => onDetailsChange({ password: e.target.value })}
+                    placeholder="WPA Password"
+                    className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 text-sm"
+                  />
+                </div>
+              )}
+            </div>
+            <div className="flex items-center space-x-2 pt-2">
+              <input
+                type="checkbox"
+                id="wifi-hidden"
+                checked={wifi.hidden || false}
+                onChange={(e) => onDetailsChange({ hidden: e.target.checked })}
+                className="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 border-slate-350"
+              />
+              <label htmlFor="wifi-hidden" className="text-xs font-semibold text-slate-650 dark:text-slate-350 cursor-pointer">
+                This is a hidden network SSID
+              </label>
             </div>
           </div>
         );
@@ -701,6 +810,66 @@ export default function QRCustomizer({
               </div>
             </div>
 
+            {/* Custom Background Image Uploader */}
+            <div className="bg-slate-50 dark:bg-slate-950 p-4 rounded-2xl border border-slate-200/50 dark:border-slate-850 space-y-4">
+              <div>
+                <h4 className="text-xs font-bold uppercase text-slate-700 dark:text-slate-300 font-outfit">QR Background Image</h4>
+                <p className="text-[10px] text-slate-400 mt-0.5">Overlay QR dots on top of a custom image (e.g. tiger, patterns)</p>
+              </div>
+
+              {!design.backgroundImage ? (
+                <div className="border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-2xl p-4 text-center hover:border-slate-350 dark:hover:border-slate-700 transition-colors relative group">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleBgUpload}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  />
+                  <Upload className="w-6 h-6 text-slate-400 mx-auto group-hover:scale-105 transition-transform duration-350" />
+                  <p className="text-xs font-bold text-slate-650 dark:text-slate-300 mt-1 font-outfit">Upload Background Image</p>
+                  <p className="text-[9px] text-slate-400 mt-0.5">PNG, JPG (QR background will automatically set to transparent)</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-200/80 dark:border-slate-800/80">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-slate-50 dark:bg-slate-950 border border-slate-200/50 p-1 rounded flex items-center justify-center">
+                        <img src={design.backgroundImage} alt="Background preview" className="max-w-full max-h-full object-contain rounded" />
+                      </div>
+                      <div>
+                        <p className="text-xs font-bold text-slate-700 dark:text-slate-300 font-outfit">Background Active</p>
+                        <p className="text-[9px] text-slate-400">QR container transparent</p>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={removeBgImage}
+                      className="p-1.5 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg transition-colors cursor-pointer"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+
+                  {/* Opacity slider */}
+                  <div>
+                    <div className="flex justify-between text-[10px] font-bold text-slate-400 uppercase mb-1">
+                      <span>Image Opacity</span>
+                      <span>{Math.round((design.backgroundOpacity ?? 1) * 100)}%</span>
+                    </div>
+                    <input
+                      type="range"
+                      min="0.10"
+                      max="1.0"
+                      step="0.05"
+                      value={design.backgroundOpacity ?? 1}
+                      onChange={(e) => onDesignChange({ backgroundOpacity: parseFloat(e.target.value) })}
+                      className="w-full accent-blue-600"
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+
             {/* Gradient Options */}
             <div className="bg-slate-50 dark:bg-slate-950 p-4 rounded-2xl border border-slate-200/50 dark:border-slate-850 space-y-4">
               <div className="flex items-center justify-between">
@@ -957,6 +1126,20 @@ export default function QRCustomizer({
                   <p className="text-[9px] text-slate-400 mt-0.5">Maximum size restricted to 26% of grid to ensure error-correction integrity.</p>
                 </div>
 
+                {/* Hide Background Dots Toggle */}
+                <div className="flex items-center space-x-2 pt-2">
+                  <input
+                    type="checkbox"
+                    id="logo-hide-dots"
+                    checked={design.logo.hideBackgroundDots ?? true}
+                    onChange={(e) => onDesignChange({ logo: { ...design.logo, hideBackgroundDots: e.target.checked } })}
+                    className="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 border-slate-200 dark:border-slate-800"
+                  />
+                  <label htmlFor="logo-hide-dots" className="text-xs font-semibold text-slate-650 dark:text-slate-350 cursor-pointer">
+                    Hide QR dots behind logo
+                  </label>
+                </div>
+
                 {/* Logo Padding & Shape */}
                 <div className="grid grid-cols-2 gap-4">
                   <div>
@@ -1019,6 +1202,7 @@ export default function QRCustomizer({
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {([
                   { id: 'none', label: 'No Frame' },
+                  { id: 'clay-3d', label: '3D Pillow Card' },
                   { id: 'border', label: 'Simple Border' },
                   { id: 'rounded', label: 'Rounded Border' },
                   { id: 'bottom-label', label: 'Bottom Label' },

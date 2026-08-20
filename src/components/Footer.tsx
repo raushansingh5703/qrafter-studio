@@ -112,7 +112,7 @@ export default function Footer() {
                 <span className="font-semibold text-slate-800 dark:text-white">Free</span>: Design, live previews, and camera test scans.
               </p>
               <p className="text-sm text-slate-600 dark:text-slate-400">
-                <span className="font-semibold text-blue-600 dark:text-blue-400">₹1 one-time</span>: Full vector SVG, 300 DPI high-res PNG, no watermarks.
+                <span className="font-semibold text-blue-600 dark:text-blue-400">₹19 one-time</span>: Full vector SVG, 300 DPI high-res PNG &amp; WEBP, no watermarks.
               </p>
             </div>
           </div>

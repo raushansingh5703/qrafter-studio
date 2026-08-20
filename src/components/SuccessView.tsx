@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import confetti from 'canvas-confetti';
 import { CheckCircle2, Download, ArrowRight, Loader2, Sparkles } from 'lucide-react';
 import { QRDesign } from '../types/qr';
-import { convertSVGToPNG } from '../utils/qrEngine';
+import { convertSVGToFormat } from '../utils/qrEngine';
 
 interface SuccessViewProps {
   unifiedSvg: string;
@@ -13,7 +13,7 @@ interface SuccessViewProps {
 }
 
 export default function SuccessView({ unifiedSvg, design, onCreateAnother }: SuccessViewProps) {
-  const [downloadingPNG, setDownloadingPNG] = useState(false);
+  const [downloadingFormat, setDownloadingFormat] = useState<'png' | 'webp' | null>(null);
 
   // Trigger confetti explosion on success load
   useEffect(() => {
@@ -83,26 +83,26 @@ export default function SuccessView({ unifiedSvg, design, onCreateAnother }: Suc
     }
   };
 
-  const handleDownloadPNG = async () => {
+  const handleDownloadFormat = async (format: 'png' | 'webp') => {
     try {
-      setDownloadingPNG(true);
+      setDownloadingFormat(format);
       const { width, height } = getCanvasDimensions();
       
       // Use scale = 3 for 300 DPI printing equivalent size
-      const pngDataUrl = await convertSVGToPNG(unifiedSvg, width, height, 3);
+      const dataUrl = await convertSVGToFormat(unifiedSvg, width, height, format, 3);
       
       const link = document.createElement('a');
-      link.href = pngDataUrl;
-      link.download = `qrafter_${design.type}_qr.png`;
+      link.href = dataUrl;
+      link.download = `qrafter_${design.type}_qr.${format}`;
       document.body.appendChild(link);
       link.click();
       
       document.body.removeChild(link);
     } catch (err) {
-      console.error('Failed to download PNG:', err);
-      alert('Error generating PNG. Try downloading the SVG vector format.');
+      console.error(`Failed to download ${format}:`, err);
+      alert(`Error generating ${format.toUpperCase()}. Try downloading the SVG vector format.`);
     } finally {
-      setDownloadingPNG(false);
+      setDownloadingFormat(null);
     }
   };
 
@@ -135,29 +135,47 @@ export default function SuccessView({ unifiedSvg, design, onCreateAnother }: Suc
 
       {/* Buttons Options */}
       <div className="bg-white dark:bg-slate-900 border border-slate-200/50 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-sm space-y-4 max-w-md mx-auto">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
           <button
             onClick={handleDownloadSVG}
-            className="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 py-3 px-4 rounded-xl font-bold text-sm tracking-wide flex items-center justify-center space-x-2 transition-colors cursor-pointer"
+            className="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 py-3 px-2 rounded-xl font-bold text-xs tracking-wide flex flex-col items-center justify-center space-y-1 transition-all active:scale-[0.98] cursor-pointer border border-slate-200/50 dark:border-slate-700/50"
           >
             <Download className="w-4 h-4 text-violet-500" />
-            <span>Download SVG</span>
+            <span>SVG (Vector)</span>
           </button>
 
           <button
-            onClick={handleDownloadPNG}
-            disabled={downloadingPNG}
-            className="bg-slate-900 dark:bg-white hover:bg-slate-850 dark:hover:bg-slate-100 text-white dark:text-slate-950 py-3 px-4 rounded-xl font-bold text-sm tracking-wide flex items-center justify-center space-x-2 transition-colors cursor-pointer disabled:opacity-50"
+            onClick={() => handleDownloadFormat('png')}
+            disabled={downloadingFormat !== null}
+            className="bg-slate-900 dark:bg-white hover:bg-slate-850 dark:hover:bg-slate-100 text-white dark:text-slate-950 py-3 px-2 rounded-xl font-bold text-xs tracking-wide flex flex-col items-center justify-center space-y-1 transition-all active:scale-[0.98] cursor-pointer disabled:opacity-50"
           >
-            {downloadingPNG ? (
+            {downloadingFormat === 'png' ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin text-blue-500" />
-                <span>Compiling 300DPI...</span>
+                <span>Building...</span>
               </>
             ) : (
               <>
                 <Download className="w-4 h-4 text-blue-500" />
-                <span>Download PNG</span>
+                <span>PNG (HD)</span>
+              </>
+            )}
+          </button>
+
+          <button
+            onClick={() => handleDownloadFormat('webp')}
+            disabled={downloadingFormat !== null}
+            className="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 py-3 px-2 rounded-xl font-bold text-xs tracking-wide flex flex-col items-center justify-center space-y-1 transition-all active:scale-[0.98] cursor-pointer border border-slate-200/50 dark:border-slate-700/50 disabled:opacity-50"
+          >
+            {downloadingFormat === 'webp' ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin text-emerald-500" />
+                <span>Building...</span>
+              </>
+            ) : (
+              <>
+                <Download className="w-4 h-4 text-emerald-500" />
+                <span>WEBP (HD)</span>
               </>
             )}
           </button>

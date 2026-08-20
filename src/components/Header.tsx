@@ -121,7 +121,19 @@ export default function Header({ onCreateClick }: HeaderProps) {
             alt="Qrafter Studio" 
             className="h-15 w-auto object-contain transition-transform hover:scale-[1.02] dark:drop-shadow-[0_0_1.5px_rgba(255,255,255,0.85)]" 
           />
+          {/* <div className="hidden sm:flex flex-col">
+            <span className="font-bold text-slate-850 dark:text-white text-sm tracking-wide leading-none">Free QR Generator</span>
+            <span className="text-[10px] text-slate-400 font-medium mt-0.5">Qrafter Studio</span>
+          </div> */}
         </div>
+
+        {/* Badge */}
+        {/* <div className="hidden md:flex items-center">
+          <span className="bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 text-xs font-semibold px-3 py-1 rounded-full border border-emerald-200/50 dark:border-emerald-900/30 shadow-sm flex items-center space-x-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            <span>No Registration Required</span>
+          </span>
+        </div> */}
 
         <div className="flex items-center space-x-4">
           <button

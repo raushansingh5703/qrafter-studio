@@ -2,12 +2,14 @@
 
 import {
   Link2,
+  FileText,
+  Wifi,
+  User,
   Star,
   CreditCard,
   MessageCircle,
   MapPin,
   Utensils,
-  User,
   Phone,
   Mail,
   Share2,
@@ -27,12 +29,14 @@ interface QRTypeOption {
 
 const qrTypesList: QRTypeOption[] = [
   { id: 'website', title: 'Website Link', description: 'Redirect users to your URL', icon: Link2, color: 'from-blue-500 to-cyan-500' },
+  { id: 'text', title: 'Plain Text', description: 'Display a raw text message', icon: FileText, color: 'from-slate-500 to-slate-700' },
+  { id: 'wifi', title: 'Wi-Fi Network', description: 'Connect to Wi-Fi SSID & password', icon: Wifi, color: 'from-sky-500 to-indigo-600' },
+  { id: 'vcard', title: 'Contact / vCard', description: 'Save contact card to phone book', icon: User, color: 'from-violet-500 to-purple-600' },
   { id: 'google-review', title: 'Google Review', description: 'Collect 5-star customer reviews', icon: Star, color: 'from-amber-400 to-orange-500' },
   { id: 'upi', title: 'UPI / Payment', description: 'Receive instant direct bank transfer', icon: CreditCard, color: 'from-emerald-500 to-teal-600' },
   { id: 'whatsapp', title: 'WhatsApp', description: 'Start a pre-filled chat conversation', icon: MessageCircle, color: 'from-green-500 to-emerald-600' },
   { id: 'maps', title: 'Google Maps', description: 'Show business location coordinates', icon: MapPin, color: 'from-red-500 to-pink-500' },
   { id: 'menu', title: 'Digital Menu', description: 'Display restaurant menu or PDF', icon: Utensils, color: 'from-amber-500 to-yellow-600' },
-  { id: 'vcard', title: 'Contact / vCard', description: 'Save contact card to phone book', icon: User, color: 'from-violet-500 to-purple-600' },
   { id: 'phone', title: 'Phone Call', description: 'Initiate a cell phone call dialer', icon: Phone, color: 'from-indigo-500 to-blue-600' },
   { id: 'email', title: 'Email Sender', description: 'Send pre-written email inquiries', icon: Mail, color: 'from-sky-500 to-blue-500' },
   { id: 'social', title: 'Social Media', description: 'Share Instagram, YouTube, Linktree', icon: Share2, color: 'from-pink-500 to-rose-600' },

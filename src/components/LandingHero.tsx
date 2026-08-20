@@ -76,9 +76,9 @@ export default function LandingHero({ onStartClick }: LandingHeroProps) {
 
           <div className="space-y-4">
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white font-outfit leading-tight">
-              Create QR Codes That <br />
+              Custom QR Code Generator <br />
               <span className="bg-gradient-to-r from-blue-600 to-violet-600 bg-clip-text text-transparent">
-                Look Amazing
+                with Logo &amp; Gradients
               </span>
             </h1>
 
@@ -99,7 +99,7 @@ export default function LandingHero({ onStartClick }: LandingHeroProps) {
             </div>
 
             <p className="text-base sm:text-lg text-slate-500 dark:text-slate-400 max-w-xl mx-auto lg:mx-0 leading-relaxed">
-              Design, customize, and generate professional branded QR codes for your business in seconds. Edit patterns, eyes, custom gradients, frames, and embed logos. Download vector PDF/SVG and high-res print outputs.
+              Design and download professional branded QR codes with logo, custom eye shapes, color gradients, and 3D claymorphic card templates. Get high-resolution PNG, SVG, or WEBP formats. No registration required.
             </p>
           </div>
 

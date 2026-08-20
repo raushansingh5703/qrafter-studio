@@ -189,6 +189,24 @@ export function assembleUnifiedSVG(qrSvgRaw: string, design: QRDesign): string {
     frameTextSVG = `
       <text x="550" y="1385" fill="${frameTextColor}" font-family="${fontStack}" font-size="68" font-weight="bold" text-anchor="middle" letter-spacing="5">${frameTextVal}</text>
     `;
+  } else if (design.frame.style === 'clay-3d') {
+    // Premium 3D puffy clay squircle frame container
+    width = 1160;
+    height = 1160;
+    qrX = 130;
+    qrY = 130;
+    qrSize = 900;
+    
+    // We create a card filled with frameColor, overlayed with highlight & shadow gradients to construct the 3D look
+    frameBackground = `
+      <!-- 3D Puffy Card Background -->
+      <rect x="30" y="30" width="1100" height="1100" fill="${frameColor}" rx="160" filter="url(#clay-shadow)" />
+      <!-- High-gloss overlay lighting to simulate 3D volume -->
+      <rect x="30" y="30" width="1100" height="1100" rx="160" fill="none" stroke="url(#clay-light-bevel)" stroke-width="26" />
+      <rect x="43" y="43" width="1074" height="1074" rx="147" fill="none" stroke="url(#clay-dark-bevel)" stroke-width="12" />
+      <!-- Inner card containing the QR matrix -->
+      <rect x="110" y="110" width="940" height="940" fill="${design.backgroundColor === 'transparent' ? '#ffffff' : design.backgroundColor}" rx="100" />
+    `;
   } else {
     // 'none' style
     width = 1000;
@@ -203,6 +221,32 @@ export function assembleUnifiedSVG(qrSvgRaw: string, design: QRDesign): string {
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&amp;family=Outfit:wght@400;500;600;700&amp;family=Playfair+Display:wght@600;700&amp;family=Fira+Code:wght@500;700&amp;display=swap');
   `;
 
+  const clayDefs = `
+    <filter id="clay-shadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="24" stdDeviation="20" flood-color="#000000" flood-opacity="0.22" />
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#000000" flood-opacity="0.12" />
+    </filter>
+    <linearGradient id="clay-light-bevel" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.8" />
+      <stop offset="25%" stop-color="#ffffff" stop-opacity="0.2" />
+      <stop offset="75%" stop-color="#000000" stop-opacity="0.05" />
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.35" />
+    </linearGradient>
+    <linearGradient id="clay-dark-bevel" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.4" />
+      <stop offset="50%" stop-color="#ffffff" stop-opacity="0" />
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.25" />
+    </linearGradient>
+  `;
+
+  let bgImageSVG = '';
+  if (design.backgroundImage) {
+    bgImageSVG = `
+      <!-- Custom Background Image -->
+      <image href="${design.backgroundImage}" x="0" y="0" width="1000" height="1000" preserveAspectRatio="xMidYMid slice" opacity="${design.backgroundOpacity ?? 1}" />
+    `;
+  }
+
   // Construct overall unified SVG
   const unifiedSVG = `
 <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -210,9 +254,11 @@ export function assembleUnifiedSVG(qrSvgRaw: string, design: QRDesign): string {
     <style type="text/css">
       ${fontImports}
     </style>
+    ${clayDefs}
   </defs>
   ${frameBackground}
   <g transform="translate(${qrX}, ${qrY}) scale(${qrSize / 1000})">
+    ${bgImageSVG}
     ${qrInnerContent}
   </g>
   ${borderPaths}
@@ -226,14 +272,15 @@ export function assembleUnifiedSVG(qrSvgRaw: string, design: QRDesign): string {
 }
 
 /**
- * Converts unified SVG code into a high-quality PNG Data URI
+ * Converts unified SVG code into a high-quality PNG or WEBP Data URI
  * scale = 1 gives standard HD (e.g. 1000px wide)
  * scale = 2 or 3 gives super-HD, 300 DPI equivalent print quality (e.g. 3000px wide)
  */
-export function convertSVGToPNG(
+export function convertSVGToFormat(
   svgString: string,
   width: number,
   height: number,
+  format: 'png' | 'webp',
   scale: number = 2
 ): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -264,7 +311,7 @@ export function convertSVGToPNG(
         ctx.drawImage(image, 0, 0, width * scale, height * scale);
 
         // Export data URL
-        const dataUrl = canvas.toDataURL('image/png');
+        const dataUrl = canvas.toDataURL(`image/${format}`);
         URL.revokeObjectURL(blobUrl);
         resolve(dataUrl);
       };
@@ -279,4 +326,13 @@ export function convertSVGToPNG(
       reject(error);
     }
   });
+}
+
+export function convertSVGToPNG(
+  svgString: string,
+  width: number,
+  height: number,
+  scale: number = 2
+): Promise<string> {
+  return convertSVGToFormat(svgString, width, height, 'png', scale);
 }

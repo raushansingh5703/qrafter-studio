@@ -5,7 +5,7 @@ export async function POST() {
   const keyId = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
   const keySecret = process.env.RAZORPAY_KEY_SECRET;
 
-  const amount = 100; // Rs. 1 (in paise: 1 * 100)
+  const amount = 1900; // Rs. 19 (in paise: 19 * 100)
   const currency = 'INR';
 
   // Check if API keys exist. If not, run in Simulated Testing Mode.

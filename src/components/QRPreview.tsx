@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import QRCodeStyling from 'qr-code-styling';
-import { Camera, Download, ShieldAlert, CheckCircle2 } from 'lucide-react';
+import { Camera, Download, ShieldAlert, CheckCircle2, Loader2, Check } from 'lucide-react';
 import { QRDesign, QRDetails } from '../types/qr';
 import { checkScannability } from '../utils/safetyChecker';
-import { assembleUnifiedSVG, getFontStack } from '../utils/qrEngine';
+import { assembleUnifiedSVG, getFontStack, convertSVGToFormat } from '../utils/qrEngine';
 
 interface QRPreviewProps {
   design: QRDesign;
@@ -25,6 +25,7 @@ export default function QRPreview({
   const qrContainerRef = useRef<HTMLDivElement | null>(null);
   const qrCodeInstance = useRef<QRCodeStyling | null>(null);
 
+
   // Callback Ref: executes whenever the DOM container mounts or remounts (due to frame changes)
   const qrRefCallback = (el: HTMLDivElement | null) => {
     qrContainerRef.current = el;
@@ -41,7 +42,7 @@ export default function QRPreview({
           color: design.foregroundColor,
         },
         backgroundOptions: {
-          color: design.backgroundColor,
+          color: design.backgroundImage ? 'transparent' : design.backgroundColor,
         },
         cornersSquareOptions: {
           type: design.eyeStyle,
@@ -51,7 +52,7 @@ export default function QRPreview({
         },
         imageOptions: {
           crossOrigin: 'anonymous',
-          hideBackgroundDots: true,
+          hideBackgroundDots: design.logo.hideBackgroundDots ?? true,
         }
       });
       qrCode.append(el);
@@ -64,6 +65,7 @@ export default function QRPreview({
     
     // Force a visual sync immediately upon mount
     syncLogoBackingShape();
+    syncBackgroundTransparency();
   };
 
   // Helper to dynamically inject the logo background shape directly into the SVG DOM
@@ -121,6 +123,25 @@ export default function QRPreview({
     }
   };
 
+  // Helper to dynamically set background rect in SVG DOM to transparent when background image is present
+  const syncBackgroundTransparency = () => {
+    if (!qrContainerRef.current) return;
+
+    const svgEl = qrContainerRef.current.querySelector('svg');
+    if (svgEl) {
+      const firstRect = svgEl.querySelector('rect');
+      if (firstRect) {
+        if (design.backgroundImage) {
+          firstRect.setAttribute('fill', 'none');
+          firstRect.setAttribute('opacity', '0');
+        } else {
+          firstRect.setAttribute('fill', design.backgroundColor);
+          firstRect.setAttribute('opacity', '1');
+        }
+      }
+    }
+  };
+
   // 2. Perform live updates and inject backing shape in-place in the DOM
   useEffect(() => {
     if (!qrCodeInstance.current) return;
@@ -142,7 +163,7 @@ export default function QRPreview({
           : undefined,
       },
       backgroundOptions: {
-        color: design.backgroundColor,
+        color: design.backgroundImage ? 'transparent' : design.backgroundColor,
       },
       cornersSquareOptions: {
         type: design.eyeStyle,
@@ -155,7 +176,7 @@ export default function QRPreview({
       image: design.logo.source || undefined,
       imageOptions: {
         crossOrigin: 'anonymous',
-        hideBackgroundDots: true,
+        hideBackgroundDots: design.logo.hideBackgroundDots ?? true,
         imageSize: design.logo.size,
         margin: design.logo.padding,
       },
@@ -167,6 +188,7 @@ export default function QRPreview({
     // Introduce a short timeout to let the library append the updated image tag first
     const timer = setTimeout(() => {
       syncLogoBackingShape();
+      syncBackgroundTransparency();
     }, 50);
 
     return () => clearTimeout(timer);
@@ -185,7 +207,26 @@ export default function QRPreview({
     }
   };
 
-  // Compile full SVG string for download trigger
+  // Determine width/height from design frame settings to compute aspect canvas
+  const getCanvasDimensions = () => {
+    switch (design.frame.style) {
+      case 'border':
+        return { width: 1100, height: 1100 };
+      case 'rounded':
+        return { width: 1120, height: 1120 };
+      case 'bottom-label':
+        return { width: 1100, height: 1350 };
+      case 'scan-me':
+        return { width: 1100, height: 1380 };
+      case 'badge':
+        return { width: 1100, height: 1500 };
+      case 'modern':
+        return { width: 1100, height: 1450 };
+      default:
+        return { width: 1000, height: 1000 };
+    }
+  };
+
   const handleDownloadTrigger = () => {
     if (!qrCodeInstance.current) return;
 
@@ -210,7 +251,7 @@ export default function QRPreview({
           : undefined,
       },
       backgroundOptions: {
-        color: design.backgroundColor,
+        color: design.backgroundImage ? 'transparent' : design.backgroundColor,
       },
       cornersSquareOptions: {
         type: design.eyeStyle,
@@ -223,13 +264,12 @@ export default function QRPreview({
       image: design.logo.source || undefined,
       imageOptions: {
         crossOrigin: 'anonymous',
-        hideBackgroundDots: true,
+        hideBackgroundDots: design.logo.hideBackgroundDots ?? true,
         imageSize: design.logo.size,
         margin: design.logo.padding,
       },
     });
 
-    // Render to a temporary container to extract raw 1000x1000 SVG
     const tempDiv = document.createElement('div');
     exportEngine.append(tempDiv);
 
@@ -240,7 +280,7 @@ export default function QRPreview({
         const fullCompiledSvg = assembleUnifiedSVG(rawExportSvg, design);
         onDownloadClick(fullCompiledSvg);
       }
-    }, 50);
+    }, 100);
   };
 
   // Render HTML preview frame mocks matching the SVG template outputs
@@ -384,10 +424,62 @@ export default function QRPreview({
           </div>
         );
 
+      case 'clay-3d':
+        return (
+          <div
+            className="p-7 rounded-[2.8rem] flex flex-col items-center justify-center relative transition-all duration-300 select-none animate-[fadeIn_0.3s_ease]"
+            style={{
+              backgroundColor: frameColor,
+              boxShadow: `
+                0 20px 40px -10px rgba(0,0,0,0.22), 
+                inset 0 10px 18px rgba(255,255,255,0.45), 
+                inset 0 -10px 18px rgba(0,0,0,0.2), 
+                inset 0 2px 4px rgba(255,255,255,0.6)
+              `
+            }}
+          >
+            {/* White/Inner QR background box */}
+            <div 
+              className="p-3.5 rounded-[1.8rem] overflow-hidden flex items-center justify-center relative"
+              style={{
+                backgroundColor: design.backgroundColor === 'transparent' ? '#ffffff' : design.backgroundColor,
+                boxShadow: 'inset 0 2px 8px rgba(0,0,0,0.04)'
+              }}
+            >
+              {design.backgroundImage && (
+                <div 
+                  className="absolute inset-0 bg-cover bg-center"
+                  style={{
+                    backgroundImage: `url(${design.backgroundImage})`,
+                    opacity: design.backgroundOpacity ?? 1,
+                  }}
+                />
+              )}
+              <div ref={qrRefCallback} className="w-[260px] h-[260px] relative z-10" />
+            </div>
+          </div>
+        );
+
       default:
         // 'none' style
         return (
-          <div ref={qrRefCallback} className="w-[260px] h-[260px]" style={{ ...baseQRStyle }} />
+          <div 
+            className="relative overflow-hidden rounded-3xl p-1.5 transition-all duration-300"
+            style={{ 
+              backgroundColor: design.backgroundColor === 'transparent' ? 'transparent' : design.backgroundColor 
+            }}
+          >
+            {design.backgroundImage && (
+              <div 
+                className="absolute inset-0 bg-cover bg-center"
+                style={{
+                  backgroundImage: `url(${design.backgroundImage})`,
+                  opacity: design.backgroundOpacity ?? 1,
+                }}
+              />
+            )}
+            <div ref={qrRefCallback} className="w-[260px] h-[260px] relative z-10" />
+          </div>
         );
     }
   };
@@ -421,24 +513,24 @@ export default function QRPreview({
       <div className="space-y-3">
         <button
           onClick={handleDownloadTrigger}
-          className="w-full bg-slate-900 dark:bg-white hover:bg-slate-850 dark:hover:bg-slate-100 text-white dark:text-slate-950 py-3.5 px-4 rounded-xl font-bold text-sm tracking-wide shadow-md flex items-center justify-center space-x-2 transition-all active:scale-[0.99] cursor-pointer"
+          className="w-full bg-slate-900 dark:bg-white hover:bg-slate-850 dark:hover:bg-slate-100 text-white dark:text-slate-950 py-3.5 px-4 rounded-xl font-bold text-sm shadow-md flex items-center justify-center space-x-2 transition-all active:scale-[0.98] cursor-pointer"
         >
           <Download className="w-4.5 h-4.5" />
-          <span>Download HD QR — ₹1</span>
+          <span>Download HD QR — ₹19</span>
         </button>
-
-        <button
-          onClick={onScannerOpen}
-          className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-850 text-slate-700 dark:text-slate-350 py-3.5 px-4 rounded-xl font-semibold text-sm flex items-center justify-center space-x-2 transition-colors cursor-pointer"
-        >
-          <Camera className="w-4.5 h-4.5 text-blue-500" />
-          <span>Camera Test Scan</span>
-        </button>
-
-        <p className="text-[10px] text-slate-400 dark:text-slate-500 text-center font-medium">
-          Free unlimited preview &amp; custom scanning. Pay once to unlock high-res print vectors.
-        </p>
       </div>
+
+      <button
+        onClick={onScannerOpen}
+        className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-850 text-slate-700 dark:text-slate-350 py-3 px-4 rounded-xl font-semibold text-sm flex items-center justify-center space-x-2 transition-colors cursor-pointer"
+      >
+        <Camera className="w-4.5 h-4.5 text-blue-500" />
+        <span>Camera Test Scan</span>
+      </button>
+
+      <p className="text-[10px] text-slate-400 dark:text-slate-500 text-center font-medium">
+        Free unlimited preview & custom scanning. Pay once to unlock high-res print vectors.
+      </p>
     </div>
   );
 }

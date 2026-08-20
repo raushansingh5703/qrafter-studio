@@ -232,7 +232,7 @@ export default function PaymentModal({ onClose, onSuccess }: PaymentModalProps) 
                     <h4 className="text-xs font-bold text-slate-700 dark:text-slate-350 uppercase">Item Description</h4>
                     <p className="text-sm font-semibold text-slate-800 dark:text-white mt-0.5">Vector Print HD QR Bundle</p>
                   </div>
-                  <span className="text-lg font-extrabold text-blue-600 dark:text-blue-450 font-outfit">₹1</span>
+                  <span className="text-lg font-extrabold text-blue-600 dark:text-blue-450 font-outfit">₹19</span>
                 </div>
 
                 <div className="pt-3 text-[11px] text-slate-500 dark:text-slate-400 space-y-2">
@@ -258,7 +258,7 @@ export default function PaymentModal({ onClose, onSuccess }: PaymentModalProps) 
                   className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 px-4 rounded-xl flex items-center justify-center space-x-2 shadow-lg shadow-blue-500/10 cursor-pointer transition-transform active:scale-[0.99]"
                 >
                   <CreditCard className="w-5 h-5" />
-                  <span>{orderData.simulated ? 'Simulate Success Payment' : 'Pay ₹1 with Razorpay'}</span>
+                  <span>{orderData.simulated ? 'Simulate Success Payment' : 'Pay ₹19 with Razorpay'}</span>
                 </button>
 
                 <div className="flex items-center justify-center space-x-4 text-[10px] text-slate-400 font-medium">

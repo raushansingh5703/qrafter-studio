@@ -13,11 +13,29 @@ import PaymentModal from '@/components/PaymentModal';
 import SuccessView from '@/components/SuccessView';
 import { QRType, QRDesign, QRDetails, defaultDesign, defaultDetails } from '@/types/qr';
 
+// Helper to escape special characters for WIFI SSID and Password
+function escapeWifiString(str: string): string {
+  return str.replace(/\\/g, '\\\\')
+            .replace(/;/g, '\\;')
+            .replace(/:/g, '\\:')
+            .replace(/,/g, '\\,')
+            .replace(/"/g, '\\"');
+}
+
 // Helper function to dynamically compile inputs into standard QR payload formats
 function formatQRData(type: QRType, details: QRDetails): string {
   switch (type) {
     case 'website':
       return details.website.url || 'https://example.com';
+    case 'text':
+      return details.text.text || '';
+    case 'wifi':
+      const wifi = details.wifi;
+      const ssid = escapeWifiString(wifi.ssid || '');
+      const password = wifi.password ? escapeWifiString(wifi.password) : '';
+      const encryption = wifi.encryption || 'nopass';
+      const hidden = wifi.hidden ? 'true' : '';
+      return `WIFI:S:${ssid};T:${encryption};P:${password};H:${hidden};;`;
     case 'google-review':
       return details['google-review'].reviewUrl || 'https://g.page/r/example/review';
     case 'upi':
@@ -172,7 +190,7 @@ export default function Home() {
                     <div className="bg-white dark:bg-slate-900 border border-slate-200/50 dark:border-slate-800 p-5 rounded-2xl">
                       <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center font-bold text-sm mb-3">3</div>
                       <h4 className="font-bold text-sm text-slate-800 dark:text-slate-200">Secure Download</h4>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-normal">Verify scan readability, pay ₹1 one-time securely to unlock lossless vector SVG &amp; PNG.</p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-normal">Verify scan readability, pay ₹19 one-time securely to unlock lossless vector SVG, PNG & WEBP.</p>
                     </div>
                   </div>
                 </div>
