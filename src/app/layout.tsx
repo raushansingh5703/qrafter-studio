@@ -13,6 +13,10 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://qrafter-studio.vercel.app"),
+  alternates: {
+    canonical: "/",
+  },
   title: "Custom QR Code Generator with Logo & 3D Frames | Qrafter Studio",
   description: "Create custom branded QR codes with logo, eye shapes, custom patterns, color gradients, and 3D claymorphic card frames. Download print-ready high-resolution SVG, PNG, and WEBP.",
   keywords: [
