@@ -13,7 +13,7 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://qrafter-studio.vercel.app"),
+  metadataBase: new URL("https://www.qrafter.online"),
   alternates: {
     canonical: "/",
   },
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Custom QR Code Generator with Logo & 3D Frames | Qrafter Studio",
     description: "Create custom branded QR codes with logo, eye shapes, custom patterns, color gradients, and 3D claymorphic card frames. Download print-ready high-resolution SVG, PNG, and WEBP.",
-    url: "https://qrafter-studio.vercel.app",
+    url: "https://www.qrafter.online",
     siteName: "Qrafter Studio",
     locale: "en_US",
     type: "website",
@@ -71,9 +71,9 @@ const schemaData = {
   "@graph": [
     {
       "@type": "WebApplication",
-      "@id": "https://qrafter-studio.vercel.app/#website",
+      "@id": "https://www.qrafter.online/#website",
       "name": "Qrafter Studio",
-      "url": "https://qrafter-studio.vercel.app",
+      "url": "https://www.qrafter.online",
       "description": "Create custom branded QR codes with logo, eye shapes, custom patterns, color gradients, and 3D frames. Download print-ready high-resolution SVG, PNG, and WEBP.",
       "applicationCategory": "DesignApplication, BusinessApplication",
       "operatingSystem": "All",
@@ -85,7 +85,7 @@ const schemaData = {
     },
     {
       "@type": "FAQPage",
-      "@id": "https://qrafter-studio.vercel.app/#faq",
+      "@id": "https://www.qrafter.online/#faq",
       "mainEntity": [
         {
           "@type": "Question",
