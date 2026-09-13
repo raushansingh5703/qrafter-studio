@@ -84,14 +84,9 @@ export const DownloadPage: React.FC = () => {
     setIsDownloading(true);
     setHasStartedDownload(true);
 
-    // Direct stream download trigger via Cloud Functions endpoint
+    // Trigger download directly in the current window without opening a new tab
     const downloadUrl = getDownloadUrl(sessionId);
-    const downloadWindow = document.createElement('a');
-    downloadWindow.href = downloadUrl;
-    downloadWindow.setAttribute('download', '');
-    document.body.appendChild(downloadWindow);
-    downloadWindow.click();
-    document.body.removeChild(downloadWindow);
+    window.location.href = downloadUrl;
 
     // Provide friendly state indicator for download transfer
     setTimeout(() => {
