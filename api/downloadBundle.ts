@@ -35,7 +35,7 @@ export default async function handler(req: any, res: any) {
     return;
   }
 
-  if (req.method !== 'GET') {
+  if (req.method !== 'GET' && req.method !== 'HEAD') {
     res.statusCode = 405;
     res.setHeader('Content-Type', 'text/plain');
     res.end('Method Not Allowed');
