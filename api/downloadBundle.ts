@@ -1,5 +1,6 @@
 import { initializeApp, getApps } from 'firebase/app';
 import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
+import * as crypto from 'crypto';
 
 const firebaseConfig = {
   apiKey: process.env.VITE_FIREBASE_API_KEY || 'AIzaSyC_NADbpFf8BLNvdMxECOrHTUxcqpeuZkY',
@@ -128,8 +129,11 @@ export default async function handler(req: any, res: any) {
     } catch (e) {}
 
     // Redirect directly to Google Drive download stream
-    // Using confirm=t to bypass >100MB virus scan confirmation screen
-    const directDownloadUrl = `https://drive.usercontent.google.com/download?id=${encodeURIComponent(cleanFileId)}&export=download&confirm=t`;
+    // Using confirm=t and uuid parameter to bypass >100MB virus scan confirmation screen completely
+    const downloadUuid = typeof crypto.randomUUID === 'function'
+      ? crypto.randomUUID()
+      : 'fc47413a-0e6e-45f8-a23d-cbf9e090c800';
+    const directDownloadUrl = `https://drive.usercontent.google.com/download?id=${encodeURIComponent(cleanFileId)}&export=download&confirm=t&uuid=${encodeURIComponent(downloadUuid)}`;
 
     res.writeHead(302, {
       Location: directDownloadUrl,

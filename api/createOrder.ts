@@ -16,8 +16,8 @@ const firebaseConfig = {
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];
 const db = getFirestore(app);
 
-const RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID || 'rzp_test_TbMh90k1LPdv0i';
-const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET || 'D1AOBb4otACDUQ0bz2WlNwfY';
+const RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID || 'rzp_live_Tbatf0LEJ5jSfK';
+const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET || 'xO1ay1EVjQAeIOyAj0S3vJMJ';
 
 export default async function handler(req: any, res: any) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -128,11 +128,11 @@ export default async function handler(req: any, res: any) {
       razorpayOrderId = rzpOrder.id;
     } catch (primaryErr: any) {
       console.warn('Primary Razorpay credentials failed:', primaryErr?.message);
-      // If primary keys had authentication error, fallback to verified working test credentials
-      if (RAZORPAY_KEY_ID !== 'rzp_test_TbMh90k1LPdv0i' || RAZORPAY_KEY_SECRET !== 'D1AOBb4otACDUQ0bz2WlNwfY') {
+      // If custom keys in env failed, try verified live credentials
+      if (RAZORPAY_KEY_ID !== 'rzp_live_Tbatf0LEJ5jSfK' || RAZORPAY_KEY_SECRET !== 'xO1ay1EVjQAeIOyAj0S3vJMJ') {
         try {
-          keyIdUsed = 'rzp_test_TbMh90k1LPdv0i';
-          const rzpOrder: any = await tryCreate('rzp_test_TbMh90k1LPdv0i', 'D1AOBb4otACDUQ0bz2WlNwfY');
+          keyIdUsed = 'rzp_live_Tbatf0LEJ5jSfK';
+          const rzpOrder: any = await tryCreate('rzp_live_Tbatf0LEJ5jSfK', 'xO1ay1EVjQAeIOyAj0S3vJMJ');
           razorpayOrderId = rzpOrder.id;
         } catch (fallbackErr: any) {
           console.error('Fallback Razorpay error:', fallbackErr);

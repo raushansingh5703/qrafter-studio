@@ -14,7 +14,7 @@ const firebaseConfig = {
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];
 const db = getFirestore(app);
 
-const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET || 'D1AOBb4otACDUQ0bz2WlNwfY';
+const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET || 'xO1ay1EVjQAeIOyAj0S3vJMJ';
 
 export default async function handler(req: any, res: any) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -63,7 +63,7 @@ export default async function handler(req: any, res: any) {
 
     // Cryptographic HMAC SHA256 Signature Verification
     const payload = `${razorpayOrderId}|${razorpayPaymentId}`;
-    const secretsToTry = Array.from(new Set([RAZORPAY_KEY_SECRET, 'D1AOBb4otACDUQ0bz2WlNwfY'])).filter(Boolean);
+    const secretsToTry = Array.from(new Set([RAZORPAY_KEY_SECRET, 'xO1ay1EVjQAeIOyAj0S3vJMJ', 'D1AOBb4otACDUQ0bz2WlNwfY'])).filter(Boolean);
 
     let isMatch = false;
     for (const sec of secretsToTry) {
