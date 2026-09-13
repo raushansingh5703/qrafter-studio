@@ -1,12 +1,25 @@
-import { doc, getDoc, updateDoc, setDoc } from 'firebase/firestore';
-import { db } from './_firebase';
-import { setCorsHeaders, parseRequestBody } from './_utils';
+import { initializeApp, getApps } from 'firebase/app';
+import { getFirestore, doc, getDoc, updateDoc, setDoc } from 'firebase/firestore';
 import * as crypto from 'crypto';
+
+const firebaseConfig = {
+  apiKey: process.env.VITE_FIREBASE_API_KEY || 'AIzaSyC_NADbpFf8BLNvdMxECOrHTUxcqpeuZkY',
+  authDomain: process.env.VITE_FIREBASE_AUTH_DOMAIN || 'foods-90f69.firebaseapp.com',
+  projectId: process.env.VITE_FIREBASE_PROJECT_ID || 'foods-90f69',
+  storageBucket: process.env.VITE_FIREBASE_STORAGE_BUCKET || 'foods-90f69.firebasestorage.app',
+  messagingSenderId: process.env.VITE_FIREBASE_MESSAGING_SENDER_ID || '445594432394',
+  appId: process.env.VITE_FIREBASE_APP_ID || '1:445594432394:web:30354062c14cfebf0b8e73',
+};
+
+const app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];
+const db = getFirestore(app);
 
 const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET || 'D1AOBb4otACDUQ0bz2WlNwfY';
 
 export default async function handler(req: any, res: any) {
-  setCorsHeaders(res);
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-download-session');
 
   if (req.method === 'OPTIONS') {
     res.statusCode = 200;
@@ -22,8 +35,24 @@ export default async function handler(req: any, res: any) {
   }
 
   try {
-    const body = await parseRequestBody(req);
-    const { orderId, razorpayPaymentId, razorpayOrderId, razorpaySignature } = body;
+    let body = req.body;
+    if (typeof body === 'string') {
+      try { body = JSON.parse(body); } catch { body = {}; }
+    }
+
+    if (!body || Object.keys(body).length === 0) {
+      body = await new Promise((resolve) => {
+        let raw = '';
+        req.on('data', (chunk: any) => { raw += chunk; });
+        req.on('end', () => {
+          try { resolve(raw ? JSON.parse(raw) : {}); }
+          catch { resolve({}); }
+        });
+        req.on('error', () => resolve({}));
+      });
+    }
+
+    const { orderId, razorpayPaymentId, razorpayOrderId, razorpaySignature } = body || {};
 
     if (!orderId || !razorpayPaymentId || !razorpayOrderId || !razorpaySignature) {
       res.statusCode = 400;
@@ -110,6 +139,6 @@ export default async function handler(req: any, res: any) {
     console.error('verifyPayment Serverless Function error:', error);
     res.statusCode = 500;
     res.setHeader('Content-Type', 'application/json');
-    res.end(JSON.stringify({ error: 'An unexpected internal error occurred during payment verification.' }));
+    res.end(JSON.stringify({ error: error.message || 'Payment verification failed.' }));
   }
 }

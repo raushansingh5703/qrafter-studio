@@ -1,9 +1,37 @@
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
-import { db } from './_firebase';
-import { setCorsHeaders, formatDriveImageUrl } from './_utils';
+import { initializeApp, getApps } from 'firebase/app';
+import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
+
+const firebaseConfig = {
+  apiKey: process.env.VITE_FIREBASE_API_KEY || 'AIzaSyC_NADbpFf8BLNvdMxECOrHTUxcqpeuZkY',
+  authDomain: process.env.VITE_FIREBASE_AUTH_DOMAIN || 'foods-90f69.firebaseapp.com',
+  projectId: process.env.VITE_FIREBASE_PROJECT_ID || 'foods-90f69',
+  storageBucket: process.env.VITE_FIREBASE_STORAGE_BUCKET || 'foods-90f69.firebasestorage.app',
+  messagingSenderId: process.env.VITE_FIREBASE_MESSAGING_SENDER_ID || '445594432394',
+  appId: process.env.VITE_FIREBASE_APP_ID || '1:445594432394:web:30354062c14cfebf0b8e73',
+};
+
+const app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];
+const db = getFirestore(app);
+
+function formatDriveImageUrl(url?: string | null): string {
+  if (!url) return 'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=800&q=80';
+  const trimmed = url.trim();
+  if (/^[a-zA-Z0-9_-]{25,}$/.test(trimmed)) {
+    return `https://lh3.googleusercontent.com/d/${trimmed}`;
+  }
+  const fileMatch = trimmed.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) ||
+                    trimmed.match(/id=([a-zA-Z0-9_-]+)/) ||
+                    trimmed.match(/\/d\/([a-zA-Z0-9_-]+)/);
+  if (fileMatch && fileMatch[1]) {
+    return `https://lh3.googleusercontent.com/d/${fileMatch[1]}`;
+  }
+  return trimmed;
+}
 
 export default async function handler(req: any, res: any) {
-  setCorsHeaders(res);
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-download-session');
 
   if (req.method === 'OPTIONS') {
     res.statusCode = 200;
