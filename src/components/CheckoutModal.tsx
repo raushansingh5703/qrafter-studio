@@ -41,9 +41,9 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ bundle, onClose })
           key: orderData.keyId,
           amount: Math.round(bundle.price * 100),
           currency: 'INR',
-          name: 'CineVault Bundles',
-          description: `Access for ${bundle.title}`,
-          image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=200&q=80',
+          name: bundle.title,
+          description: `${bundle.category || 'Creator Pack'} • ${bundle.clipCount || 'Video Bundle'} (Instant Download)`,
+          image: formatDriveImageUrl(bundle.thumbnail),
           order_id: orderData.razorpayOrderId,
           prefill: {
             email: email,
