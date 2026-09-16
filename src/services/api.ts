@@ -40,6 +40,16 @@ export async function fetchBundles(): Promise<Bundle[]> {
           ? rawScreenshots.map((url: string) => formatDriveImageUrl(url))
           : [];
 
+        const rawEarning = data.earningProofScreenshots || [];
+        const earningProofScreenshots = Array.isArray(rawEarning)
+          ? rawEarning.map((url: string) => formatDriveImageUrl(url))
+          : [];
+
+        const rawCustomer = data.customerProofScreenshots || [];
+        const customerProofScreenshots = Array.isArray(rawCustomer)
+          ? rawCustomer.map((url: string) => formatDriveImageUrl(url))
+          : [];
+
         return {
           id: d.id,
           title: data.title || '',
@@ -47,6 +57,8 @@ export async function fetchBundles(): Promise<Bundle[]> {
           thumbnail: formatDriveImageUrl(data.thumbnail),
           previewVideo: data.previewVideo || undefined,
           dashboardScreenshots,
+          earningProofScreenshots,
+          customerProofScreenshots,
           price: Number(data.price) || 0,
           originalPrice: Number(data.originalPrice) || 0,
           category: data.category || 'Creator Pack',
@@ -81,6 +93,16 @@ export async function fetchBundleById(bundleId: string): Promise<Bundle> {
         ? rawScreenshots.map((url: string) => formatDriveImageUrl(url))
         : [];
 
+      const rawEarning = data.earningProofScreenshots || [];
+      const earningProofScreenshots = Array.isArray(rawEarning)
+        ? rawEarning.map((url: string) => formatDriveImageUrl(url))
+        : [];
+
+      const rawCustomer = data.customerProofScreenshots || [];
+      const customerProofScreenshots = Array.isArray(rawCustomer)
+        ? rawCustomer.map((url: string) => formatDriveImageUrl(url))
+        : [];
+
       return {
         id: snap.id,
         title: data.title || '',
@@ -88,6 +110,8 @@ export async function fetchBundleById(bundleId: string): Promise<Bundle> {
         thumbnail: formatDriveImageUrl(data.thumbnail),
         previewVideo: data.previewVideo || undefined,
         dashboardScreenshots,
+        earningProofScreenshots,
+        customerProofScreenshots,
         price: Number(data.price) || 0,
         originalPrice: Number(data.originalPrice) || 0,
         category: data.category || 'Creator Pack',

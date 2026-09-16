@@ -5,6 +5,8 @@ import { fetchBundleById, formatDriveImageUrl } from '../services/api';
 import { CheckoutModal } from '../components/CheckoutModal';
 import { DemoVideoPlayer } from '../components/DemoVideoPlayer';
 import { ProofScreenshotsGallery } from '../components/ProofScreenshotsGallery';
+import { EarningProofGallery } from '../components/EarningProofGallery';
+import { CustomerProofGallery } from '../components/CustomerProofGallery';
 import {
   Sparkles,
   Film,
@@ -210,7 +212,27 @@ export const BundleDetailsPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Section 2: YouTube Dashboard & Analytics Proof */}
+          {/* Section 2: EARNING PROOF🧾 👇 */}
+          {bundle.earningProofScreenshots && bundle.earningProofScreenshots.length > 0 && (
+            <EarningProofGallery
+              screenshots={bundle.earningProofScreenshots}
+              title={bundle.title}
+              price={bundle.price}
+              onBuyNow={() => setShowCheckout(true)}
+            />
+          )}
+
+          {/* Section 3: CUSTOMER PROOF🧾 👇 */}
+          {bundle.customerProofScreenshots && bundle.customerProofScreenshots.length > 0 && (
+            <CustomerProofGallery
+              screenshots={bundle.customerProofScreenshots}
+              title={bundle.title}
+              price={bundle.price}
+              onBuyNow={() => setShowCheckout(true)}
+            />
+          )}
+
+          {/* Section 4: YouTube Dashboard & Analytics Proof */}
           {bundle.dashboardScreenshots && bundle.dashboardScreenshots.length > 0 && (
             <ProofScreenshotsGallery
               screenshots={bundle.dashboardScreenshots}

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Bundle } from '../types';
 import { createOrder, verifyPayment, formatDriveImageUrl } from '../services/api';
 import confetti from 'canvas-confetti';
-import { X, ShieldCheck, Lock, Sparkles, Loader2, CreditCard, AlertCircle } from 'lucide-react';
+import { X, ShieldCheck, Lock, Sparkles, Loader2, CreditCard, AlertCircle, Zap, RefreshCcw } from 'lucide-react';
 
 interface CheckoutModalProps {
   bundle: Bundle;
@@ -52,7 +52,14 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ bundle, onClose })
           theme: {
             color: '#9333ea',
           },
+          retry: {
+            enabled: true,
+            max_count: 4,
+          },
           modal: {
+            backdropclose: false,
+            escape: false,
+            handleback: true,
             ondismiss: () => {
               setLoading(false);
             },
@@ -89,7 +96,20 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ bundle, onClose })
         const rzp = new Razorpay(options);
         rzp.on('payment.failed', (resp: any) => {
           setLoading(false);
-          navigate(`/payment-failed?reason=${encodeURIComponent(resp.error?.description || 'Payment rejected')}`);
+          const errorReason = resp.error?.reason;
+          const errorDesc = resp.error?.description || 'Payment rejected';
+          const isTimeout =
+            errorReason === 'payment_timed_out' ||
+            errorDesc.toLowerCase().includes('timed out') ||
+            errorDesc.toLowerCase().includes('timeout');
+
+          if (isTimeout) {
+            setError(
+              '⚠️ Payment timed out while waiting for UPI authorization. Click below to try again — we recommend scanning the Instant UPI QR Code with PhonePe, GPay, or Paytm for immediate approval.'
+            );
+          } else {
+            setError(`${errorDesc}. Please try again or select another payment method.`);
+          }
         });
         rzp.open();
       } else {
@@ -216,6 +236,29 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ bundle, onClose })
             />
           </div>
 
+          {/* Fastest Checkout Tip */}
+          <div className="p-3.5 rounded-2xl bg-gradient-to-r from-purple-950/40 via-[#151722] to-indigo-950/40 border border-purple-500/25 text-xs text-purple-200 flex items-start gap-2.5">
+            <Zap className="w-4 h-4 text-amber-300 shrink-0 mt-0.5" />
+            <div className="leading-relaxed">
+              <span className="font-bold text-white">⚡ Instant UPI Tip:</span> Select <span className="text-amber-300 font-bold">UPI QR Code</span> on the payment screen & scan with PhonePe, GPay, or Paytm for 5-second instant approval.
+            </div>
+          </div>
+
+          {loading && (
+            <div className="p-4 rounded-2xl bg-purple-950/50 border border-purple-500/40 text-center space-y-2 animate-pulse">
+              <div className="flex items-center justify-center gap-2 text-purple-300 font-bold text-sm">
+                <Loader2 className="w-4 h-4 animate-spin text-purple-400" />
+                <span>Awaiting Payment Confirmation...</span>
+              </div>
+              <p className="text-xs text-gray-300">
+                Please complete the payment in the Razorpay window or in your UPI mobile app.
+              </p>
+              <p className="text-[11px] text-amber-300 font-medium">
+                ⚠️ Keep this window open. Your download session will automatically launch upon confirmation!
+              </p>
+            </div>
+          )}
+
           <div className="pt-2">
             <button
               type="submit"
@@ -225,7 +268,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ bundle, onClose })
               {loading ? (
                 <>
                   <Loader2 className="w-5 h-5 animate-spin" />
-                  <span>Securing Order & Session...</span>
+                  <span>Processing Payment...</span>
                 </>
               ) : (
                 <>

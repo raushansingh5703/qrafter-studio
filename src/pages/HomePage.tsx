@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Bundle } from '../types';
-import { fetchBundles } from '../services/api';
+import { fetchBundles, formatDriveImageUrl } from '../services/api';
 import { BundleCard } from '../components/BundleCard';
 import { CheckoutModal } from '../components/CheckoutModal';
+import { DemoVideoPlayer } from '../components/DemoVideoPlayer';
+import { ProofScreenshotsGallery } from '../components/ProofScreenshotsGallery';
+import { EarningProofGallery } from '../components/EarningProofGallery';
+import { CustomerProofGallery } from '../components/CustomerProofGallery';
 import {
   Sparkles,
   Zap,
@@ -17,6 +21,7 @@ import {
   HelpCircle,
   Play,
   Flame,
+  CheckCircle2,
 } from 'lucide-react';
 
 export const HomePage: React.FC = () => {
@@ -36,6 +41,10 @@ export const HomePage: React.FC = () => {
         setLoading(false);
       });
   }, []);
+
+  const featuredBundle =
+    bundles.find((b) => b.previewVideo || (b.dashboardScreenshots && b.dashboardScreenshots.length > 0)) ||
+    bundles[0];
 
   const categories = ['All', 'Viral Reels', 'Cinematic B-Roll', '3D Animations', 'Luxury Lifestyle', 'Audio FX'];
 
@@ -82,42 +91,197 @@ export const HomePage: React.FC = () => {
           {/* CTAs */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <a
-              href="#bundles"
-              className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-purple-600 via-indigo-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold text-base shadow-xl shadow-purple-600/30 flex items-center justify-center gap-2.5 transition-all hover:scale-105 active:scale-95"
+              href="#proof-showcase"
+              className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-purple-600 via-indigo-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-black text-base shadow-xl shadow-purple-600/30 flex items-center justify-center gap-2.5 transition-all hover:scale-105 active:scale-95"
             >
-              <Zap className="w-5 h-5 text-amber-300" />
-              <span>Explore Bundles</span>
+              <Play className="w-5 h-5 fill-current text-pink-300" />
+              <span>Watch Sample Reels & Proof</span>
             </a>
             <a
-              href="#licensing"
+              href="#bundles"
               className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white/5 hover:bg-white/10 text-gray-200 border border-white/10 font-semibold text-base flex items-center justify-center gap-2 transition-colors"
             >
-              <ShieldCheck className="w-5 h-5 text-emerald-400" />
-              <span>Commercial License</span>
+              <Zap className="w-5 h-5 text-amber-300" />
+              <span>Explore All Bundles</span>
             </a>
           </div>
 
           {/* Social Proof Strip */}
           <div className="mt-14 pt-8 border-t border-white/5 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             <div>
+              <div className="text-2xl font-black text-white">10M+</div>
+              <div className="text-xs text-purple-400 font-semibold">Organic Views Proof</div>
+            </div>
+            <div>
               <div className="text-2xl font-black text-white">5,000+</div>
               <div className="text-xs text-gray-500">4K Master Clips</div>
             </div>
             <div>
               <div className="text-2xl font-black text-white">100%</div>
-              <div className="text-xs text-gray-500">Royalty-Free Rights</div>
+              <div className="text-xs text-emerald-400 font-semibold">Royalty-Free Monetization</div>
             </div>
             <div>
-              <div className="text-2xl font-black text-white">10-Min</div>
+              <div className="text-2xl font-black text-white">Instant</div>
               <div className="text-xs text-gray-500">Encrypted Delivery</div>
-            </div>
-            <div>
-              <div className="text-2xl font-black text-white">4.9/5</div>
-              <div className="text-xs text-gray-500">Creator Rating</div>
             </div>
           </div>
         </div>
       </section>
+
+      {/* Featured Viral Showcase & Verified Channel Proof */}
+      {featuredBundle && (
+        <section id="proof-showcase" className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto scroll-mt-20">
+          {/* Section Heading */}
+          <div className="text-center max-w-3xl mx-auto mb-12">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-pink-500/15 via-purple-500/15 to-indigo-500/15 border border-purple-500/30 text-purple-300 text-xs font-bold uppercase tracking-wider mb-4 animate-pulse">
+              <Flame className="w-4 h-4 text-pink-500" />
+              <span>Live Proof & Sample Reels</span>
+            </div>
+            <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight mb-4">
+              Watch The Editing Quality.{' '}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-amber-300">
+                Inspect Real Channel Growth.
+              </span>
+            </h2>
+            <p className="text-gray-400 text-sm sm:text-base leading-relaxed">
+              Don't buy blind. Watch sample vertical reels uncompressed and see verified YouTube Studio analytics from creators who used these packs.
+            </p>
+          </div>
+
+          {/* Featured Hero Product Card Banner */}
+          <div className="mb-10 p-6 sm:p-8 rounded-3xl bg-gradient-to-tr from-purple-950/40 via-[#11131a] to-indigo-950/40 border border-purple-500/25 shadow-2xl flex flex-col lg:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-5 w-full lg:w-auto">
+              <img
+                src={formatDriveImageUrl(featuredBundle.thumbnail)}
+                alt={featuredBundle.title}
+                referrerPolicy="no-referrer"
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  if (!target.dataset.fallback) {
+                    target.dataset.fallback = 'true';
+                    target.src = 'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=800&q=80';
+                  }
+                }}
+                className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-cover border border-white/10 shrink-0 shadow-lg"
+              />
+              <div>
+                <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+                  <span className="px-2.5 py-0.5 rounded-full bg-purple-600/80 text-white font-bold text-[11px]">
+                    {featuredBundle.category}
+                  </span>
+                  <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-semibold text-[11px]">
+                    {featuredBundle.resolution || '4K UHD 60FPS'}
+                  </span>
+                  <span className="text-xs text-gray-400 font-medium">
+                    {featuredBundle.clipCount || '5,000+ Clips'}
+                  </span>
+                </div>
+                <h3 className="text-xl sm:text-2xl font-black text-white line-clamp-1">
+                  {featuredBundle.title}
+                </h3>
+                <p className="text-xs sm:text-sm text-gray-400 line-clamp-1 mt-0.5">
+                  {featuredBundle.description}
+                </p>
+              </div>
+            </div>
+
+            {/* Price & Action */}
+            <div className="flex items-center justify-between lg:justify-end gap-4 w-full lg:w-auto pt-4 lg:pt-0 border-t lg:border-t-0 border-white/5">
+              <div className="text-left lg:text-right">
+                <div className="flex items-baseline gap-2">
+                  <span className="text-3xl font-black text-white">₹{featuredBundle.price}</span>
+                  {featuredBundle.originalPrice > featuredBundle.price && (
+                    <span className="text-sm text-gray-500 line-through">
+                      ₹{featuredBundle.originalPrice}
+                    </span>
+                  )}
+                </div>
+                <div className="text-[11px] text-emerald-400 font-medium flex items-center gap-1">
+                  <CheckCircle2 className="w-3 h-3 text-emerald-400" /> Lifetime Monetization Rights
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2.5">
+                <button
+                  onClick={() => setSelectedBundleForCheckout(featuredBundle)}
+                  className="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-purple-600 via-indigo-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold text-sm shadow-xl shadow-purple-600/40 flex items-center gap-2 transition-all hover:scale-105 active:scale-95 whitespace-nowrap"
+                >
+                  <Zap className="w-4 h-4 text-amber-300" />
+                  <span>Get Instant Access (₹{featuredBundle.price})</span>
+                </button>
+
+                <Link
+                  to={`/bundles/${featuredBundle.id}`}
+                  className="hidden sm:inline-flex px-4 py-3.5 rounded-2xl bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white border border-white/10 text-xs font-semibold transition-colors"
+                >
+                  Details
+                </Link>
+              </div>
+            </div>
+          </div>
+
+          {/* Media Showcase: Demo Player, Earning Proof, Customer Proof & Analytics Proof */}
+          <div className="space-y-10">
+            {/* 1. Demo Video Preview Player */}
+            {featuredBundle.previewVideo && (
+              <DemoVideoPlayer
+                videoUrl={featuredBundle.previewVideo}
+                title={featuredBundle.title}
+                thumbnailUrl={formatDriveImageUrl(featuredBundle.thumbnail)}
+              />
+            )}
+
+            {/* 2. EARNING PROOF🧾 👇 */}
+            {featuredBundle.earningProofScreenshots && featuredBundle.earningProofScreenshots.length > 0 && (
+              <EarningProofGallery
+                screenshots={featuredBundle.earningProofScreenshots}
+                title={featuredBundle.title}
+                price={featuredBundle.price}
+                onBuyNow={() => setSelectedBundleForCheckout(featuredBundle)}
+              />
+            )}
+
+            {/* 3. CUSTOMER PROOF🧾 👇 */}
+            {featuredBundle.customerProofScreenshots && featuredBundle.customerProofScreenshots.length > 0 && (
+              <CustomerProofGallery
+                screenshots={featuredBundle.customerProofScreenshots}
+                title={featuredBundle.title}
+                price={featuredBundle.price}
+                onBuyNow={() => setSelectedBundleForCheckout(featuredBundle)}
+              />
+            )}
+
+            {/* 4. YouTube Channel Reach & Analytics Proof */}
+            {featuredBundle.dashboardScreenshots && featuredBundle.dashboardScreenshots.length > 0 && (
+              <ProofScreenshotsGallery
+                screenshots={featuredBundle.dashboardScreenshots}
+                title={featuredBundle.title}
+              />
+            )}
+          </div>
+
+          {/* Direct Buy Bar at bottom of proof */}
+          <div className="mt-8 p-6 rounded-3xl bg-gradient-to-r from-purple-900/40 via-[#11131a] to-pink-900/40 border border-purple-500/30 text-center flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="text-left">
+              <h4 className="font-extrabold text-white text-base sm:text-lg flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-amber-300" />
+                Ready to replicate these viral results on your own channel?
+              </h4>
+              <p className="text-xs text-gray-400 mt-0.5">
+                Instant delivery • 100% Watermark-Free • 10-Minute download session opens immediately after payment.
+              </p>
+            </div>
+
+            <button
+              onClick={() => setSelectedBundleForCheckout(featuredBundle)}
+              className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-extrabold text-sm shadow-xl shadow-purple-600/30 flex items-center justify-center gap-2 transition-all hover:scale-105 active:scale-95 shrink-0"
+            >
+              <Zap className="w-4 h-4 text-amber-300" />
+              <span>Download Bundle for ₹{featuredBundle.price}</span>
+            </button>
+          </div>
+        </section>
+      )}
 
       {/* Featured Bundles Catalog */}
       <section id="bundles" className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">

@@ -5,6 +5,8 @@ export interface Bundle {
   thumbnail: string;
   previewVideo?: string;
   dashboardScreenshots?: string[];
+  earningProofScreenshots?: string[];
+  customerProofScreenshots?: string[];
   price: number;
   originalPrice: number;
   category: string;
@@ -50,6 +52,8 @@ export interface DownloadSessionData {
     thumbnail: string;
     previewVideo?: string;
     dashboardScreenshots?: string[];
+    earningProofScreenshots?: string[];
+    customerProofScreenshots?: string[];
     category: string;
     clipCount: string;
     resolution: string;
