@@ -4,8 +4,14 @@ import { Film, Zap, ShieldCheck } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-white/10 bg-[#08090d]/80 backdrop-blur-xl">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+    <header className="sticky top-0 z-40 w-full border-b border-white/10 bg-[#08090d]/90 backdrop-blur-xl">
+      {/* Top Flash Sale Urgent Announcement Bar */}
+      <div className="w-full bg-gradient-to-r from-purple-700 via-pink-600 to-amber-500 text-white text-[11px] sm:text-xs font-bold py-1.5 px-4 text-center flex items-center justify-center gap-2 shadow-md">
+        <span className="bg-black/30 px-2 py-0.5 rounded-full uppercase text-[10px] tracking-wider animate-pulse">🔥 MEGA FLASH SALE</span>
+        <span>5,000+ 4K Viral Reels Bundle Only <span className="underline decoration-amber-300 decoration-2 font-black">₹49</span> (Regular ₹999) • Instant Delivery</span>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
         {/* Brand Logo */}
         <Link to="/" className="flex items-center gap-3 group">
           <div className="w-11 h-11 rounded-xl bg-gradient-to-tr from-purple-600 via-indigo-600 to-pink-500 flex items-center justify-center shadow-lg shadow-purple-500/20 group-hover:scale-105 transition-transform duration-200">

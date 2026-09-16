@@ -7,6 +7,8 @@ import { DemoVideoPlayer } from '../components/DemoVideoPlayer';
 import { ProofScreenshotsGallery } from '../components/ProofScreenshotsGallery';
 import { EarningProofGallery } from '../components/EarningProofGallery';
 import { CustomerProofGallery } from '../components/CustomerProofGallery';
+import { MobileStickyBuyBar } from '../components/MobileStickyBuyBar';
+import { RecentPurchaseToast } from '../components/RecentPurchaseToast';
 import {
   Sparkles,
   Film,
@@ -301,6 +303,15 @@ export const BundleDetailsPage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Real-time Purchase Social Proof Popups */}
+      <RecentPurchaseToast />
+
+      {/* Sticky Bottom Buy Bar on Mobile */}
+      <MobileStickyBuyBar
+        bundle={bundle}
+        onBuy={() => setShowCheckout(true)}
+      />
     </div>
   );
 };
