@@ -17,28 +17,28 @@ export const ProofScreenshotsGallery: React.FC<ProofScreenshotsGalleryProps> = (
   }
 
   return (
-    <div className="rounded-3xl bg-[#11131a] border border-white/10 overflow-hidden shadow-2xl p-6 sm:p-8">
+    <div className="rounded-3xl bg-white border border-slate-200/80 overflow-hidden shadow-xl shadow-slate-200/60 p-6 sm:p-8 text-slate-800">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-5 border-b border-slate-100">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-xs font-bold uppercase tracking-wider mb-2">
-            <BarChart3 className="w-3.5 h-3.5 text-emerald-400" />
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 border border-emerald-200 text-emerald-800 text-xs font-bold uppercase tracking-wider mb-2">
+            <BarChart3 className="w-3.5 h-3.5 text-emerald-600" />
             Social Proof & Analytics
           </div>
-          <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+          <h3 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
             Verified Channel Results & Growth Proof
           </h3>
-          <p className="text-xs text-gray-400 mt-1">
+          <p className="text-xs sm:text-sm text-slate-500 mt-1">
             Real YouTube Studio dashboard statistics, impressions, and viral reach generated with these reel packages.
           </p>
         </div>
 
-        <div className="flex items-center gap-2 text-xs font-semibold">
-          <span className="flex items-center gap-1 text-purple-300 bg-purple-950/40 px-3 py-1 rounded-full border border-purple-500/30">
-            <TrendingUp className="w-3.5 h-3.5 text-purple-400" /> Viral Retention
+        <div className="flex items-center gap-2 text-xs font-bold">
+          <span className="flex items-center gap-1 text-purple-700 bg-purple-50 px-3 py-1.5 rounded-xl border border-purple-200">
+            <TrendingUp className="w-3.5 h-3.5 text-purple-600" /> Viral Retention
           </span>
-          <span className="flex items-center gap-1 text-emerald-300 bg-emerald-950/40 px-3 py-1 rounded-full border border-emerald-500/30">
-            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" /> 100% Monetization Safe
+          <span className="flex items-center gap-1 text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-200">
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" /> 100% Monetization Safe
           </span>
         </div>
       </div>
@@ -57,9 +57,9 @@ export const ProofScreenshotsGallery: React.FC<ProofScreenshotsGalleryProps> = (
           <div
             key={idx}
             onClick={() => setActiveImage(url)}
-            className="group relative rounded-2xl overflow-hidden bg-black/60 border border-white/10 hover:border-emerald-500/50 shadow-lg cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-emerald-500/10"
+            className="group relative rounded-2xl overflow-hidden bg-slate-50 border border-slate-200 hover:border-emerald-500 shadow-md cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-lg"
           >
-            <div className="aspect-[16/10] overflow-hidden">
+            <div className="aspect-[16/10] overflow-hidden bg-slate-100">
               <img
                 src={url}
                 alt={`${title} Proof ${idx + 1}`}
@@ -73,9 +73,9 @@ export const ProofScreenshotsGallery: React.FC<ProofScreenshotsGalleryProps> = (
             </div>
 
             {/* Overlay button on hover */}
-            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-4">
-              <span className="px-3.5 py-1.5 rounded-xl bg-black/70 backdrop-blur-md text-white text-xs font-bold flex items-center gap-1.5 border border-white/20 shadow-xl">
-                <ZoomIn className="w-4 h-4 text-emerald-400" />
+            <div className="absolute inset-0 bg-slate-900/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-4">
+              <span className="px-3.5 py-1.5 rounded-xl bg-white text-slate-900 text-xs font-bold flex items-center gap-1.5 shadow-xl">
+                <ZoomIn className="w-4 h-4 text-emerald-600" />
                 Click to Enlarge Full Proof
               </span>
             </div>

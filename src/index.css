@@ -4,17 +4,17 @@
 
 @layer base {
   body {
-    @apply bg-[#08090d] text-gray-100 font-sans;
+    @apply bg-[#f8fafc] text-slate-900 font-sans antialiased;
   }
 }
 
 /* Glassmorphism helpers */
 .glass-panel {
-  background: rgba(18, 20, 29, 0.7);
+  background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(226, 232, 240, 0.8);
 }
 
 .glow-purple {
-  box-shadow: 0 0 50px -10px rgba(168, 85, 247, 0.3);
+  box-shadow: 0 10px 40px -10px rgba(168, 85, 247, 0.25);
 }

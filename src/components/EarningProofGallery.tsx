@@ -21,25 +21,25 @@ export const EarningProofGallery: React.FC<EarningProofGalleryProps> = ({
   }
 
   return (
-    <div className="rounded-3xl bg-gradient-to-b from-[#11131a] to-[#0d0f17] border border-amber-500/20 overflow-hidden shadow-2xl p-6 sm:p-8">
+    <div className="rounded-3xl bg-white border border-amber-200/80 overflow-hidden shadow-xl shadow-amber-500/5 p-6 sm:p-8 text-slate-800">
       {/* Section Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-5 border-b border-slate-100">
         <div>
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/25 text-amber-300 text-xs font-black uppercase tracking-wider mb-2">
-            <DollarSign className="w-3.5 h-3.5 text-amber-400" />
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-100 border border-amber-200 text-amber-800 text-xs font-black uppercase tracking-wider mb-2">
+            <DollarSign className="w-3.5 h-3.5 text-amber-600" />
             Real Income & AdSense Proof
           </div>
-          <h3 className="text-2xl sm:text-3xl font-black text-white tracking-tight flex items-center gap-2">
+          <h3 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight flex items-center gap-2">
             <span>EARNING PROOF 🧾 👇</span>
           </h3>
-          <p className="text-xs sm:text-sm text-gray-400 mt-1">
+          <p className="text-xs sm:text-sm text-slate-500 mt-1">
             Real YouTube AdSense revenue, bank credit receipts, and monetization earnings generated with these viral reel packages.
           </p>
         </div>
 
-        <div className="flex items-center gap-2 text-xs font-semibold">
-          <span className="flex items-center gap-1 text-amber-300 bg-amber-950/40 px-3 py-1.5 rounded-full border border-amber-500/30">
-            <TrendingUp className="w-3.5 h-3.5 text-amber-400" /> 100% Monetized Channels
+        <div className="flex items-center gap-2 text-xs font-bold">
+          <span className="flex items-center gap-1 text-amber-800 bg-amber-50 px-3.5 py-1.5 rounded-xl border border-amber-200">
+            <TrendingUp className="w-3.5 h-3.5 text-amber-600" /> 100% Monetized Channels
           </span>
         </div>
       </div>
@@ -60,9 +60,9 @@ export const EarningProofGallery: React.FC<EarningProofGalleryProps> = ({
           <div
             key={idx}
             onClick={() => setActiveImage(url)}
-            className="group relative rounded-2xl overflow-hidden bg-black/60 border border-white/10 hover:border-amber-500/60 shadow-lg cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-amber-500/10"
+            className="group relative rounded-2xl overflow-hidden bg-slate-50 border border-slate-200 hover:border-amber-500 shadow-md cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-lg"
           >
-            <div className="aspect-[4/3] sm:aspect-[16/10] overflow-hidden bg-black/80">
+            <div className="aspect-[4/3] sm:aspect-[16/10] overflow-hidden bg-slate-100">
               <img
                 src={url}
                 alt={`${title} Earning Proof ${idx + 1}`}
@@ -76,19 +76,19 @@ export const EarningProofGallery: React.FC<EarningProofGalleryProps> = ({
             </div>
 
             {/* Hover overlay button */}
-            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-3">
-              <span className="px-3 py-1.5 rounded-xl bg-black/80 backdrop-blur-md text-white text-xs font-bold flex items-center gap-1.5 border border-amber-400/40 shadow-xl">
-                <ZoomIn className="w-3.5 h-3.5 text-amber-400" />
-                Inspect Full Earning Proof
+            <div className="absolute inset-0 bg-slate-900/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-3">
+              <span className="px-3.5 py-1.5 rounded-xl bg-white text-slate-900 text-xs font-bold flex items-center gap-1.5 shadow-xl">
+                <ZoomIn className="w-3.5 h-3.5 text-amber-600" />
+                Inspect Full Proof
               </span>
             </div>
 
             {/* Bottom Tag */}
-            <div className="p-2.5 bg-[#0e1017] border-t border-white/5 flex items-center justify-between text-[11px] text-gray-400">
-              <span className="flex items-center gap-1 font-semibold text-amber-400">
-                <CheckCircle2 className="w-3 h-3" /> Earning Screenshot #{idx + 1}
+            <div className="p-2.5 bg-white border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
+              <span className="flex items-center gap-1 font-bold text-amber-700">
+                <CheckCircle2 className="w-3 h-3 text-amber-600" /> Earning Screenshot #{idx + 1}
               </span>
-              <span className="text-[10px] text-gray-500 font-mono">AdSense / Bank</span>
+              <span className="text-[10px] text-slate-400 font-mono">AdSense / Bank</span>
             </div>
           </div>
         ))}
@@ -96,21 +96,21 @@ export const EarningProofGallery: React.FC<EarningProofGalleryProps> = ({
 
       {/* Action CTA Bar */}
       {onBuyNow && (
-        <div className="mt-6 pt-5 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="mt-8 p-5 rounded-2xl bg-gradient-to-r from-amber-50 via-orange-50/50 to-pink-50 border border-amber-200 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="text-left">
-            <span className="text-white font-bold text-sm sm:text-base flex items-center gap-1.5">
-              <Sparkles className="w-4 h-4 text-amber-400" /> Want to start monetizing your channel?
+            <span className="text-slate-900 font-extrabold text-sm sm:text-base flex items-center gap-1.5">
+              <Sparkles className="w-4 h-4 text-amber-600" /> Want to start monetizing your channel?
             </span>
-            <p className="text-xs text-gray-400">
+            <p className="text-xs text-slate-500 mt-0.5">
               Download all clips in uncompressed 4K with universal commercial monetization rights.
             </p>
           </div>
 
           <button
             onClick={onBuyNow}
-            className="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 via-orange-500 to-pink-600 hover:from-amber-400 hover:to-pink-500 text-white font-black text-xs sm:text-sm shadow-xl shadow-amber-500/20 flex items-center justify-center gap-2 transition-all hover:scale-105 active:scale-95 shrink-0"
+            className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-gradient-to-r from-amber-500 via-orange-500 to-pink-600 hover:from-amber-400 hover:to-pink-500 text-white font-black text-xs sm:text-sm shadow-xl shadow-amber-500/25 flex items-center justify-center gap-2 transition-all hover:scale-105 active:scale-95 shrink-0"
           >
-            <Zap className="w-4 h-4 text-amber-200" />
+            <Zap className="w-4 h-4 text-amber-200 fill-current" />
             <span>Get Bundle Now {price ? `(₹${price})` : ''}</span>
           </button>
         </div>
