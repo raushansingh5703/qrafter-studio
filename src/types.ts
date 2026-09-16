@@ -4,6 +4,7 @@ export interface Bundle {
   description: string;
   thumbnail: string;
   previewVideo?: string;
+  dashboardScreenshots?: string[];
   price: number;
   originalPrice: number;
   category: string;
@@ -47,6 +48,8 @@ export interface DownloadSessionData {
     title: string;
     description: string;
     thumbnail: string;
+    previewVideo?: string;
+    dashboardScreenshots?: string[];
     category: string;
     clipCount: string;
     resolution: string;

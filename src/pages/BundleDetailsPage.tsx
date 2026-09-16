@@ -3,6 +3,8 @@ import { useParams, Link } from 'react-router-dom';
 import { Bundle } from '../types';
 import { fetchBundleById, formatDriveImageUrl } from '../services/api';
 import { CheckoutModal } from '../components/CheckoutModal';
+import { DemoVideoPlayer } from '../components/DemoVideoPlayer';
+import { ProofScreenshotsGallery } from '../components/ProofScreenshotsGallery';
 import {
   Sparkles,
   Film,
@@ -165,6 +167,15 @@ export const BundleDetailsPage: React.FC = () => {
             </div>
           </div>
 
+          {/* Section 1: Demo Video Preview Player */}
+          {bundle.previewVideo && (
+            <DemoVideoPlayer
+              videoUrl={bundle.previewVideo}
+              title={bundle.title}
+              thumbnailUrl={formatDriveImageUrl(bundle.thumbnail)}
+            />
+          )}
+
           {/* What's Inside Checklist */}
           <div className="p-6 rounded-3xl bg-[#11131a] border border-white/5">
             <h3 className="font-bold text-lg text-white mb-4 flex items-center gap-2">
@@ -198,6 +209,14 @@ export const BundleDetailsPage: React.FC = () => {
               </div>
             </div>
           </div>
+
+          {/* Section 2: YouTube Dashboard & Analytics Proof */}
+          {bundle.dashboardScreenshots && bundle.dashboardScreenshots.length > 0 && (
+            <ProofScreenshotsGallery
+              screenshots={bundle.dashboardScreenshots}
+              title={bundle.title}
+            />
+          )}
         </div>
 
         {/* Right Column: Title, Description, Pricing Box */}

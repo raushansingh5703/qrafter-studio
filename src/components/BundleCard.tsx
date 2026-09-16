@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Bundle } from '../types';
 import { formatDriveImageUrl } from '../services/api';
-import { Film, Sparkles, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { Film, Sparkles, ArrowRight, CheckCircle2, Play, BarChart3 } from 'lucide-react';
 
 interface BundleCardProps {
   bundle: Bundle;
@@ -35,10 +35,22 @@ export const BundleCard: React.FC<BundleCardProps> = ({ bundle, onQuickBuy }) =>
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#11131a] via-transparent to-black/30" />
 
-        {/* Category Pill */}
-        <div className="absolute top-3 left-3 flex items-center gap-1 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-xs font-semibold text-purple-300">
-          <Sparkles className="w-3 h-3 text-purple-400" />
-          {bundle.category}
+        {/* Category Pill & Badges */}
+        <div className="absolute top-3 left-3 flex items-center gap-1.5 flex-wrap max-w-[70%]">
+          <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-xs font-semibold text-purple-300">
+            <Sparkles className="w-3 h-3 text-purple-400" />
+            {bundle.category}
+          </div>
+          {bundle.previewVideo && (
+            <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-purple-600/90 backdrop-blur-md text-[10px] font-bold text-white shadow">
+              <Play className="w-2.5 h-2.5 fill-current" /> Demo
+            </div>
+          )}
+          {bundle.dashboardScreenshots && bundle.dashboardScreenshots.length > 0 && (
+            <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-600/90 backdrop-blur-md text-[10px] font-bold text-white shadow">
+              <BarChart3 className="w-2.5 h-2.5" /> Proof
+            </div>
+          )}
         </div>
 
         {/* Discount Badge */}

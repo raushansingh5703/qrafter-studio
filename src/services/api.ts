@@ -35,12 +35,18 @@ export async function fetchBundles(): Promise<Bundle[]> {
     if (!snap.empty) {
       return snap.docs.map((d) => {
         const data = d.data();
+        const rawScreenshots = data.dashboardScreenshots || (data.dashboardScreenshot ? [data.dashboardScreenshot] : []);
+        const dashboardScreenshots = Array.isArray(rawScreenshots)
+          ? rawScreenshots.map((url: string) => formatDriveImageUrl(url))
+          : [];
+
         return {
           id: d.id,
           title: data.title || '',
           description: data.description || '',
           thumbnail: formatDriveImageUrl(data.thumbnail),
           previewVideo: data.previewVideo || undefined,
+          dashboardScreenshots,
           price: Number(data.price) || 0,
           originalPrice: Number(data.originalPrice) || 0,
           category: data.category || 'Creator Pack',
@@ -70,12 +76,18 @@ export async function fetchBundleById(bundleId: string): Promise<Bundle> {
     const snap = await getDoc(docRef);
     if (snap.exists()) {
       const data = snap.data();
+      const rawScreenshots = data.dashboardScreenshots || (data.dashboardScreenshot ? [data.dashboardScreenshot] : []);
+      const dashboardScreenshots = Array.isArray(rawScreenshots)
+        ? rawScreenshots.map((url: string) => formatDriveImageUrl(url))
+        : [];
+
       return {
         id: snap.id,
         title: data.title || '',
         description: data.description || '',
         thumbnail: formatDriveImageUrl(data.thumbnail),
         previewVideo: data.previewVideo || undefined,
+        dashboardScreenshots,
         price: Number(data.price) || 0,
         originalPrice: Number(data.originalPrice) || 0,
         category: data.category || 'Creator Pack',
